@@ -5,13 +5,14 @@ import viewSetting from '@/views/viewSetting.vue';
 
 const routes = [
   {
-    path: '/data',
+    path: '/',
     component: viewNir,
   },
   {
-    path: '/',
+    path: '/data',
     component: viewData,
   },
+
   {
     path:'/setting',
     component: viewSetting

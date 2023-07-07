@@ -3,8 +3,8 @@
   <el-collapse v-model="activeNames" v-loading="loading">
     <el-collapse-item title="仪器设置" name="1"  class="custom-collapse-item" >
       <div>
-        <span class="num-spin">默认积分时间</span><el-input-number v-model="num1" :step="100" :min="100" :max="1000" step-strictly></el-input-number>
-        <span class="num-spin">默认采样次数</span><el-input-number v-model="num2" :step="1" :min="5" :max="10" step-strictly></el-input-number>
+        <span class="num-spin">默认积分时间</span><el-input-number ref="ref_interval" v-model="interval" :step="100" :min="100" :max="1000" step-strictly></el-input-number>
+        <span class="num-spin">默认采样次数</span><el-input-number ref="ref_avg" v-model="avg" :step="1" :min="5" :max="10" step-strictly></el-input-number>
       </div>
       <div><CmpPlot ref="nir_base"></CmpPlot></div>
     </el-collapse-item>
@@ -35,8 +35,8 @@ import Glbs from '@/components/glb.js';
     data() {
       return {
         loading:true,
-        num1:100,
-        num2:5
+        interval:Glbs.settingObj["nir"]["interval"],
+        avg:Glbs.settingObj["nir"]["avg"],
       }
     },
 
@@ -45,6 +45,8 @@ import Glbs from '@/components/glb.js';
         // Update settingObj
         Glbs.settingObj["sample"]["sp_name"] = this.$refs.sp_name.getTags();
         Glbs.settingObj["sample"]["op_name"] = this.$refs.op_name.getTags();
+        // Glbs.settingObj["nir"]["interval"] = this.$refs.ref_interval.value;
+        // Glbs.settingObj["nir"]["avg"] = this.$refs.ref_avg.value;
         // Pass setting string to C#
         let cfgStr = JSON.stringify(Glbs.settingObj);
         CefPipe.saveCfg(cfgStr);       
