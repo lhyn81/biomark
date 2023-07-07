@@ -52,23 +52,15 @@ import Glbs from '@/components/glb.js';
     },
 
     mounted() {
-      var that=this;
-          CefPipe.readCfg()
-          .then(function(ret){
-            Glbs.settingObj = JSON.parse(ret);
-            
-            // 更新UI元素
-            that.$refs.sp_name.setTags(Glbs.settingObj["sample"]["sp_name"]);
-            that.$refs.op_name.setTags(Glbs.settingObj["sample"]["op_name"]);
-            let dark_std = [
-            Glbs.settingObj["nir"]["ref"]["base_dark"],
-            Glbs.settingObj["nir"]["ref"]["base_std"]
-            ];
-            that.$refs.nir_base.setdata(dark_std);
-            that.loading=false;
-          })
-          .catch(function(err){
-          })
+        // 更新UI元素
+      this.$refs.sp_name.setTags(Glbs.settingObj["sample"]["sp_name"]);
+      this.$refs.op_name.setTags(Glbs.settingObj["sample"]["op_name"]);
+      let dark_std = [
+      Glbs.settingObj["nir"]["ref"]["base_dark"],
+      Glbs.settingObj["nir"]["ref"]["base_std"]
+      ];
+      this.$refs.nir_base.setdata(dark_std);
+      this.loading=false;
     }
   }
 </script>
