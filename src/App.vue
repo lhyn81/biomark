@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <Cefobj></Cefobj>
     <div class="header">
       <div style="width: 200px;">Biomark检测系统</div>
       <el-input v-model="searchText" placeholder="Search..." class="search-input"/>
@@ -11,19 +12,19 @@
 
 <script>
 import Navbar from './components/cmpNavbar.vue';
+import Cefobj from './components/cmpCefpipe.vue';
 
 export default {
   name: 'App',
   components: {
     Navbar,
+    Cefobj
   },
   data() {
     return {
       searchText: '快速查询检测记录',
     };
   },
-  methods: {
-  }
 };
 </script>
 

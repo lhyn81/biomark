@@ -24,6 +24,7 @@
 <script>
 import CmpTags from '../components/cmpTags.vue';
 import CmpPlot from '@/components/cmpPlot.vue';
+import Glbs from '@/components/glb.js';
 
   export default {
     components :{
@@ -34,7 +35,6 @@ import CmpPlot from '@/components/cmpPlot.vue';
     data() {
       return {
         loading:true,
-        settingObj : null,
         num1:100,
         num2:5
       }
@@ -43,36 +43,32 @@ import CmpPlot from '@/components/cmpPlot.vue';
     methods: {
       saveSetting() {
         // Update settingObj
-        this.settingObj["sample"]["sp_name"] = this.$refs.sp_name.getTags();
-        this.settingObj["sample"]["op_name"] = this.$refs.op_name.getTags();
+        Glbs.settingObj["sample"]["sp_name"] = this.$refs.sp_name.getTags();
+        Glbs.settingObj["sample"]["op_name"] = this.$refs.op_name.getTags();
         // Pass setting string to C#
-        let cfgStr = JSON.stringify(this.settingObj);
+        let cfgStr = JSON.stringify(Glbs.settingObj);
         CefPipe.saveCfg(cfgStr);       
       }
     },
 
     mounted() {
       var that=this;
-      (async function()
-        {
-          await CefSharp.BindObjectAsync("CefPipe");
           CefPipe.readCfg()
           .then(function(ret){
-            that.settingObj = JSON.parse(ret);
-
+            Glbs.settingObj = JSON.parse(ret);
+            
             // 更新UI元素
-            that.$refs.sp_name.setTags(that.settingObj["sample"]["sp_name"]);
-            that.$refs.op_name.setTags(that.settingObj["sample"]["op_name"]);
+            that.$refs.sp_name.setTags(Glbs.settingObj["sample"]["sp_name"]);
+            that.$refs.op_name.setTags(Glbs.settingObj["sample"]["op_name"]);
             let dark_std = [
-            that.settingObj["nir"]["ref"]["base_dark"],
-            that.settingObj["nir"]["ref"]["base_std"]
+            Glbs.settingObj["nir"]["ref"]["base_dark"],
+            Glbs.settingObj["nir"]["ref"]["base_std"]
             ];
             that.$refs.nir_base.setdata(dark_std);
             that.loading=false;
           })
           .catch(function(err){
           })
-        })();
     }
   }
 </script>
