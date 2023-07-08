@@ -5,6 +5,23 @@
     element-loading-spinner="el-icon-loading"
     element-loading-background="rgba(0, 0, 0, 0.8)">
 
+    <el-collapse v-model="activeNames" v-loading="loading">
+    <el-collapse-item title="第一步:样品采谱" name="1"  class="custom-collapse-item" >
+      <div>
+        <span>默认积分时间</span><el-input-number v-model="interval" :step="100" :min="100" :max="1000" step-strictly></el-input-number>
+        <span>默认采样次数</span><el-input-number v-model="avg" :step="1" :min="5" :max="10" step-strictly></el-input-number>
+        <el-button type="primary" @click="scan(false)">采集光谱</el-button>
+      </div>    
+        <el-tabs :tab-position="bottom">
+          <el-tab-pane label="反射值">
+            <CmpPlot  ref="nir_raw"></CmpPlot>
+          </el-tab-pane>
+          <el-tab-pane label="吸收率">
+            <CmpPlot ref="nir_ref"></CmpPlot>
+          </el-tab-pane>
+        </el-tabs>
+    </el-collapse-item>
+    <el-collapse-item title="第二步:保存光谱数据" name="2" class="custom-collapse-item">
       <div>
         <span style="width: 100px;">样品名称</span>
         <el-select v-model="sp_name" placeholder="选择样品名称">
@@ -25,40 +42,27 @@
           </el-option>
         </el-select>
       </div>
-
-      <div>
-        <span>默认积分时间</span><el-input-number v-model="interval" :step="100" :min="100" :max="1000" step-strictly></el-input-number>
-        <span>默认采样次数</span><el-input-number v-model="avg" :step="1" :min="5" :max="10" step-strictly></el-input-number>
-      </div>
-
       <div>
         <el-switch
           v-model="hasMark"
-          active-text="非标定数据"
-          inactive-text="标定数据">
+          active-text="标定数据"
+          inactive-text="非标定数据">
         </el-switch>
         <div v-if="hasMark">
           <el-input
-            v-model="markName">
+            v-model="markName" placeholder="标定指标">
           </el-input>
           <el-input
-            v-model="markVal">
+            v-model="markVal" placeholder="标定数值">
           </el-input>
         </div>
       </div>
-
-      <div>
-        <el-tabs :tab-position="bottom" style="height: 500px;">
-          <el-tab-pane label="反射值">
-            <CmpPlot ref="nir_raw"></CmpPlot>
-          </el-tab-pane>
-          <el-tab-pane label="吸收率">
-            <CmpPlot ref="nir_ref"></CmpPlot>
-          </el-tab-pane>
-        </el-tabs>
-      </div>
-
-      <div><el-button type="primary" @click="scan(false)">采集光谱</el-button></div>
+    </el-collapse-item>
+    <el-collapse-item title="第三步:样品预测" name="3" class="custom-collapse-item">
+    </el-collapse-item>
+    <el-collapse-item title="第四步:保存结果数据" name="4" class="custom-collapse-item">
+    </el-collapse-item>
+  </el-collapse>
 
     </div>
   </el-scrollbar></template>
@@ -85,8 +89,8 @@ export default {
         interval:-1,
         avg:-1,
         hasMark:false,
-        markName:"水分",
-        markVal:"11.1"
+        markName:"",
+        markVal:""
       }
     },
 

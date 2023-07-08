@@ -1,5 +1,6 @@
 <template>
-    <div id="main" style="width:600px; height: 400px; background:#fff"></div>
+    <div id="main" style="width:600px; height: 400px; background:#fff">
+    </div>
 </template>
    
   <script>
