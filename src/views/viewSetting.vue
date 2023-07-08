@@ -1,4 +1,4 @@
-<template>
+<template><el-scrollbar height="600px">
   <div class="viewSetting">
   <el-collapse v-model="activeNames" v-loading="loading">
     <el-collapse-item title="仪器设置" name="1"  class="custom-collapse-item" >
@@ -19,7 +19,7 @@
   </el-collapse>
   <div class="savebtn"><el-button @click="saveSetting" type="success" plain>保存设置</el-button></div>
   </div>
-</template>
+</el-scrollbar></template>
 
 <script>
 import CmpTags from '../components/cmpTags.vue';
@@ -80,7 +80,7 @@ import Glbs from '@/components/glb.js';
 }
 
 .custom-collapse-item .el-collapse-item__header {
-  font-size:large;
+  font-size: 15px;
   font-weight: bold;
   font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
 }
@@ -104,7 +104,7 @@ import Glbs from '@/components/glb.js';
 }
 
 .custom-title {
-  font-size: 16px; /* 设置具体的字体大小 */
+  font-size: 10px; /* 设置具体的字体大小 */
 }
 
 .num-spin{
