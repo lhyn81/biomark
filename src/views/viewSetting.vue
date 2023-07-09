@@ -1,75 +1,113 @@
-<template><el-scrollbar height="600px">
-  <div class="viewSetting">
-  <el-collapse v-model="activeNames" v-loading="loading">
-    <el-collapse-item title="仪器设置" name="1"  class="custom-collapse-item" >
-      <div>
-        <span class="num-spin">默认积分时间</span><el-input-number ref="ref_interval" v-model="interval" :step="100" :min="100" :max="1000" step-strictly></el-input-number>
-        <span class="num-spin">默认采样次数</span><el-input-number ref="ref_avg" v-model="avg" :step="1" :min="5" :max="10" step-strictly></el-input-number>
+<template>
+  <el-scrollbar height="600px">
+    <div class="viewSetting">
+      <el-collapse v-model="activeNames" v-loading="loading">
+        <el-collapse-item
+          title="仪器设置"
+          name="1"
+          class="custom-collapse-item"
+        >
+          <div>
+            <span class="num-spin">默认积分时间</span
+            ><el-input-number
+              ref="ref_interval"
+              v-model="interval"
+              :step="100"
+              :min="100"
+              :max="1000"
+              step-strictly
+            ></el-input-number>
+            <span class="num-spin">默认采样次数</span
+            ><el-input-number
+              ref="ref_avg"
+              v-model="avg"
+              :step="1"
+              :min="5"
+              :max="10"
+              step-strictly
+            ></el-input-number>
+          </div>
+          <div><CmpPlot ref="nir_base"></CmpPlot></div>
+        </el-collapse-item>
+        <el-collapse-item
+          title="采样设置"
+          name="2"
+          class="custom-collapse-item"
+        >
+          <CmpTags ref="sp_name" myTitle="样本名设置" />
+          <CmpTags ref="op_name" myTitle="操作员设置" />
+        </el-collapse-item>
+        <el-collapse-item
+          title="模型设置"
+          name="3"
+          class="custom-collapse-item"
+        >
+        </el-collapse-item>
+        <el-collapse-item
+          title="数据设置"
+          name="4"
+          class="custom-collapse-item"
+        >
+        </el-collapse-item>
+      </el-collapse>
+      <div class="savebtn">
+        <el-button @click="saveSetting" type="success" plain
+          >保存设置</el-button
+        >
       </div>
-      <div><CmpPlot ref="nir_base"></CmpPlot></div>
-    </el-collapse-item>
-    <el-collapse-item title="采样设置" name="2" class="custom-collapse-item">
-      <CmpTags ref="sp_name" myTitle="样本名设置"/>
-      <CmpTags ref="op_name" myTitle="操作员设置"/>
-    </el-collapse-item>
-    <el-collapse-item title="模型设置" name="3" class="custom-collapse-item">
-    </el-collapse-item>
-    <el-collapse-item title="数据设置" name="4" class="custom-collapse-item">
-    </el-collapse-item>
-  </el-collapse>
-  <div class="savebtn"><el-button @click="saveSetting" type="success" plain>保存设置</el-button></div>
-  </div>
-</el-scrollbar></template>
+    </div>
+  </el-scrollbar>
+</template>
 
 <script>
-import CmpTags from '../components/cmpTags.vue';
-import CmpPlot from '@/components/cmpPlot.vue';
-import Glbs from '@/components/glb.js';
+import CmpTags from "../components/cmpTags.vue";
+import CmpPlot from "@/components/cmpPlot.vue";
+import Glbs from "@/components/glb.js";
 
-  export default {
-    components :{
-      CmpTags,
-      CmpPlot
+export default {
+  components: {
+    CmpTags,
+    CmpPlot,
+  },
+
+  data() {
+    return {
+      loading: true,
+      interval: Glbs.settingObj["nir"]["interval"],
+      avg: Glbs.settingObj["nir"]["avg"],
+    };
+  },
+
+  methods: {
+    saveSetting() {
+      // Update settingObj
+      Glbs.settingObj["sample"]["sp_name"] = this.$refs.sp_name.getTags();
+      Glbs.settingObj["sample"]["op_name"] = this.$refs.op_name.getTags();
+      // Glbs.settingObj["nir"]["interval"] = this.$refs.ref_interval.value;
+      // Glbs.settingObj["nir"]["avg"] = this.$refs.ref_avg.value;
+      // Pass setting string to C#
+      let cfgStr = JSON.stringify(Glbs.settingObj);
+      CefPipe.saveCfg(cfgStr);
     },
+  },
 
-    data() {
-      return {
-        loading:true,
-        interval:Glbs.settingObj["nir"]["interval"],
-        avg:Glbs.settingObj["nir"]["avg"],
-      }
-    },
-
-    methods: {
-      saveSetting() {
-        // Update settingObj
-        Glbs.settingObj["sample"]["sp_name"] = this.$refs.sp_name.getTags();
-        Glbs.settingObj["sample"]["op_name"] = this.$refs.op_name.getTags();
-        // Glbs.settingObj["nir"]["interval"] = this.$refs.ref_interval.value;
-        // Glbs.settingObj["nir"]["avg"] = this.$refs.ref_avg.value;
-        // Pass setting string to C#
-        let cfgStr = JSON.stringify(Glbs.settingObj);
-        CefPipe.saveCfg(cfgStr);       
-      }
-    },
-
-    mounted() {
-        // 更新UI元素
-      this.$refs.sp_name.setTags(Glbs.settingObj["sample"]["sp_name"]);
-      this.$refs.op_name.setTags(Glbs.settingObj["sample"]["op_name"]);
-      let dark_std = [
+  mounted() {
+    // 更新UI元素
+    this.$refs.sp_name.setTags(Glbs.settingObj["sample"]["sp_name"]);
+    this.$refs.op_name.setTags(Glbs.settingObj["sample"]["op_name"]);
+    let dark_std = [
       Glbs.settingObj["nir"]["ref"]["base_dark"],
-      Glbs.settingObj["nir"]["ref"]["base_std"]
-      ];
-      this.$refs.nir_base.setdata(dark_std);
-      this.loading=false;
-    }
-  }
+      Glbs.settingObj["nir"]["ref"]["base_std"],
+    ];
+    this.$refs.nir_base.setdata(dark_std);
+    this.loading = false;
+  },
+};
 </script>
 
 <style>
 .savebtn {
-  margin-top :20px;
+  margin-top: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -82,12 +120,13 @@ import Glbs from '@/components/glb.js';
 .custom-collapse-item .el-collapse-item__header {
   font-size: 15px;
   font-weight: bold;
-  font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
+  font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
+    "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
 }
 
 .el-tag + .el-tag {
-    margin-left: 10px;
-  }
+  margin-left: 10px;
+}
 
 .button-new-tag {
   margin-left: 10px;
@@ -107,10 +146,9 @@ import Glbs from '@/components/glb.js';
   font-size: 10px; /* 设置具体的字体大小 */
 }
 
-.num-spin{
+.num-spin {
   font-size: 15px;
   margin-left: 15px;
   margin-right: 5px;
 }
 </style>
-
