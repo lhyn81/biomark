@@ -26,6 +26,9 @@ function fakenir(length, min, max) {
     Glbs.settingObj["nir"]["ref"]["base_dark"] = fakenir(128, 1000, 2000);
     Glbs.settingObj["nir"]["ref"]["base_std"] = fakenir(128, 1000, 5000);
   });
+  CefPipe.chkModel().then((ret)=>{
+    Glbs.settingObj["models"]=JSON.parse(ret);
+  });
 })();
 
 createApp(App).use(router).use(ElementPlus).mount("#app");

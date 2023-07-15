@@ -1,8 +1,8 @@
 <template>
   <el-scrollbar height="600px">
     <div class="viewNir">
-      <el-collapse v-model="activeNames">
-        <el-collapse-item title="第一步:样品采谱" name="1" class="custom-collapse-item">
+      <el-tabs v-model="activeName">
+        <el-tab-pane label="1.样品采谱" name="1st">
           <div>
             <span>默认积分时间</span>
             <el-input-number v-model="theSampleData.interval" :step="100" :min="100" :max="1000" step-strictly></el-input-number>
@@ -14,8 +14,8 @@
             <el-tab-pane label="反射值" name="tab_raw"><CmpPlot ref="plot_rfl" /></el-tab-pane>
             <el-tab-pane label="吸收率" name="tab_abs"><CmpPlot ref="plot_abs" /></el-tab-pane>
           </el-tabs>
-        </el-collapse-item>
-        <el-collapse-item title="第二步:完善样品信息" name="2" class="custom-collapse-item">
+        </el-tab-pane>
+        <el-tab-pane label="2.填写信息" name="2nd">
           <div>
             <span style="width: 100px">样品名称</span>
             <el-select v-model="theSampleData.name" placeholder="选择样品名称">
@@ -25,8 +25,8 @@
             <el-select v-model="theSampleData.oper" placeholder="选择检测员">
               <el-option v-for="item in op_names" :key="item.label" :label="item.label" :value="item.value"></el-option>
             </el-select>
-          </div>
-          <div>
+            </div>
+            <div>
             <el-switch v-model="theSampleData.hasMark" active-text="标定数据" inactive-text="非标定数据"></el-switch>
             <div v-if="theSampleData.hasMark">
               <el-input v-model="theSampleData.markName" placeholder="标定指标"></el-input>
@@ -36,11 +36,18 @@
               <el-button type="primary" @click="saveSample">保存数据</el-button>
             </div>
           </div>
-        </el-collapse-item>
-        <el-collapse-item title="第三步:模型计算" name="3" class="custom-collapse-item">
+        </el-tab-pane>
+        <el-tab-pane label="3.模型计算" name="3rd">
+          <el-table ref="modelTable" :data="mod_list" highlight-current-row @current-change="handleCurrentChange">
+            <!-- <el-table-column type="index" width="50"></el-table-column> -->
+            <el-table-column property="id" label="编号" width="100"></el-table-column>
+            <el-table-column property="name" label="名称" width="80"></el-table-column>
+            <el-table-column property="type" label="类型" width="80"></el-table-column>
+            <el-table-column property="desc" label="描述" width="180"></el-table-column>
+          </el-table>
           <el-button type="primary" @click="infer">模型计算</el-button>
-        </el-collapse-item>
-      </el-collapse>
+        </el-tab-pane>
+      </el-tabs>
     </div>
   </el-scrollbar>
 </template>
@@ -58,32 +65,34 @@ export default {
     return {
       sp_names: [],
       op_names: [],
+      mod_list: [],
       theSampleData: {
-        id:"",
-        ts:-1,
+        id: "",
+        ts: -1,
         name: "",
-        desc:"",
+        desc: "",
         oper: "",
         interval: -1,
         avg: -1,
         nir: {
-          "rfl":[],
-          "abs":[],
-          "dark":[],
-          "std":[]
+          rfl: [],
+          abs: [],
+          dark: [],
+          std: [],
         },
         hasMark: false,
         markName: "",
         markVal: "",
       },
       theInferData: {
-        id:"",
-        ts:-1,     
-        spid:"",
-        desc:"",
-        modid:"",
-        value:[]
+        id: "",
+        ts: -1,
+        spid: "",
+        desc: "",
+        modid: "",
+        value: [],
       },
+      currentRow: null,
     };
   },
 
@@ -125,43 +134,44 @@ export default {
         });
     },
 
-    saveSample(spdata){
+    saveSample(spdata) {
       this.theSampleData.id = Glbs.guid("smp");
       this.theSampleData.ts = Math.floor(Date.now() / 1000);
       CefPipe.saveSmpData(JSON.stringify(this.theSampleData));
     },
 
-    saveInfer(inferdata){
-      
+    saveInfer(inferdata) {},
+
+    infer() {
+      CefPipe.infer("mod/model01/biomodel.dll", JSON.stringify(this.theSampleData.nir["abs"]))
+        .then(() => {
+          this.theInferData.value = ret;
+        })
+        .catch((e) => {});
     },
 
-    infer(){
-      CefPipe.infer("mod/model01/biomodel.dll", JSON.stringify(this.theSampleData.nir["abs"]))
-      .then(()=>{
-        this.theInferData.value = ret;
-      })
-      .catch((e)=>{
-
-      })
-    }
+    handleCurrentChange(val) {
+      this.currentRow = val;
+    },
   },
 
   mounted() {
     let delay = 0;
     if (Glbs.settingObj == null) delay = 3000;
     const loading = this.$loading({
-          lock: true,
-          text: '加载中...',
-          spinner: 'el-icon-loading',
-          background: 'rgba(0, 0, 0, 0.7)'
-        });
+      lock: true,
+      text: "加载中...",
+      spinner: "el-icon-loading",
+      background: "rgba(0, 0, 0, 0.7)",
+    });
     setTimeout(() => {
       this.sp_names = this.extlist(Glbs.settingObj["sample"]["sp_name"]);
       this.op_names = this.extlist(Glbs.settingObj["sample"]["op_name"]);
       this.theSampleData.interval = Glbs.settingObj["nir"]["interval"];
       this.theSampleData.avg = Glbs.settingObj["nir"]["avg"];
-      this.theSampleData.nir.dark = Glbs.settingObj["nir"]["ref"]["base_dark"],
-      this.theSampleData.nir.std = Glbs.settingObj["nir"]["ref"]["base_std"],
+      this.theSampleData.nir.dark = Glbs.settingObj["nir"]["ref"]["base_dark"];
+      this.theSampleData.nir.std = Glbs.settingObj["nir"]["ref"]["base_std"];
+      this.mod_list = Glbs.settingObj.models;
       loading.close();
     }, delay);
   },

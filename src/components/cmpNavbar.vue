@@ -1,13 +1,7 @@
 <template>
-  <el-menu 
-  background-color="#545c64"
-  text-color="#fff"
-  :default-active="activePath" 
-  mode="horizontal" 
-  @select="handleMenuSelect">
+  <el-menu style="height: 40px;" class="navbar" background-color="#FF9E2C" text-color="#fff" :default-active="activePath" mode="horizontal" @select="handleMenuSelect">
     <el-menu-item index="/">检 测</el-menu-item>
     <el-menu-item index="/data">数据管理</el-menu-item>
-    <el-menu-item index="/setting">设置</el-menu-item>
   </el-menu>
 </template>
 
@@ -15,7 +9,7 @@
 export default {
   data() {
     return {
-      activePath: '/',
+      activePath: "/",
     };
   },
   methods: {
@@ -26,3 +20,4 @@ export default {
   },
 };
 </script>
+

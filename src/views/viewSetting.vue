@@ -1,22 +1,26 @@
 <template>
   <el-scrollbar height="600px">
     <div class="viewSetting">
-      <el-collapse v-model="activeNames" v-loading="loading">
-        <el-collapse-item title="仪器设置" name="1" class="custom-collapse-item">
+      <el-tabs v-model="activeName"  v-loading="loading">
+        <el-tab-pane label="仪器设置" name="first">
           <div>
             <span class="num-spin">默认积分时间</span>
             <el-input-number ref="ref_interval" v-model="interval" :step="100" :min="100" :max="1000" step-strictly></el-input-number>
             <span class="num-spin">默认采样次数</span>
             <el-input-number ref="ref_avg" v-model="avg" :step="1" :min="5" :max="10" step-strictly></el-input-number>
+            <div><CmpPlot ref="nir_base"></CmpPlot></div>
           </div>
-          <div><CmpPlot ref="nir_base"></CmpPlot></div>
-        </el-collapse-item>
-        <el-collapse-item title="采样设置" name="2" class="custom-collapse-item">
+        </el-tab-pane>
+        <el-tab-pane label="采样设置" name="second">
           <CmpTags ref="sp_name" myTitle="样本名设置" />
           <CmpTags ref="op_name" myTitle="操作员设置" />
-        </el-collapse-item>
-        <el-collapse-item title="模型设置" name="3" class="custom-collapse-item"></el-collapse-item>
-      </el-collapse>
+        </el-tab-pane>
+      </el-tabs>
+
+      <!-- <el-collapse v-model="activeNames" v-loading="loading">
+        <el-collapse-item title="仪器设置" name="1" class="custom-collapse-item"></el-collapse-item>
+        <el-collapse-item title="采样设置" name="2" class="custom-collapse-item"></el-collapse-item>
+      </el-collapse> -->
       <div class="savebtn">
         <el-button @click="saveSetting" type="success" plain>保存设置</el-button>
       </div>
