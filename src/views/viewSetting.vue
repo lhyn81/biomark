@@ -80,7 +80,8 @@ export default {
 }
 
 .viewSetting {
-  padding: 20px;
+  padding-left: 10px;
+  margin-bottom: 10px;
 }
 
 .custom-collapse-item .el-collapse-item__header {

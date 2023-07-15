@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <div class="header">
+    <!-- <div class="header">
       <div class="left" style="width: 200px">Biomark检测系统</div>
       <div class="right">
         <el-icon class="icon" :color="color_setting" @mouseover="color_setting = colorB" @mouseout="color_setting = colorA" @click="click_setting"><Setting /></el-icon>
@@ -8,7 +8,7 @@
         <el-icon class="icon" :color="color_max" @mouseover="color_max = colorB" @mouseout="color_max = colorA" @click="click_max"><Plus /></el-icon>
         <el-icon class="icon" :color="color_close" @mouseover="color_close = colorB" @mouseout="color_close = colorA" @click="click_close"><Close /></el-icon>
       </div>
-    </div>
+    </div> -->
     <Navbar />
     <router-view></router-view>
   </div>

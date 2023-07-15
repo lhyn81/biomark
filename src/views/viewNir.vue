@@ -1,7 +1,7 @@
 <template>
   <el-scrollbar height="600px">
     <div class="viewNir">
-      <el-tabs v-model="activeName">
+      <el-tabs class="el-tabs" v-model="activeTab" >
         <el-tab-pane label="1.样品采谱" name="1st">
           <div>
             <span>默认积分时间</span>
@@ -10,7 +10,7 @@
             <el-input-number v-model="theSampleData.avg" :step="1" :min="5" :max="10" step-strictly></el-input-number>
             <el-button type="primary" @click="scan(false)">采集光谱</el-button>
           </div>
-          <el-tabs>
+          <el-tabs v-model="activePlot">
             <el-tab-pane label="反射值" name="tab_raw"><CmpPlot ref="plot_rfl" /></el-tab-pane>
             <el-tab-pane label="吸收率" name="tab_abs"><CmpPlot ref="plot_abs" /></el-tab-pane>
           </el-tabs>
@@ -93,6 +93,8 @@ export default {
         value: [],
       },
       currentRow: null,
+      activeTab:"1st",
+      activePlot:"tab_raw"
     };
   },
 
@@ -180,7 +182,7 @@ export default {
 
 <style>
 .viewNir {
-  padding: 20px;
+  padding-left: 10px;
   margin-bottom: 10px;
 }
 </style>
