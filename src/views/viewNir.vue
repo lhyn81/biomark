@@ -142,7 +142,9 @@ export default {
       CefPipe.saveSmpData(JSON.stringify(this.theSampleData));
     },
 
-    saveInfer(inferdata) {},
+    saveInfer(inferdata) {
+
+    },
 
     infer() {
       CefPipe.infer("mod/model01/biomodel.dll", JSON.stringify(this.theSampleData.nir["abs"]))
@@ -173,7 +175,7 @@ export default {
       this.theSampleData.avg = Glbs.settingObj["nir"]["avg"];
       this.theSampleData.nir.dark = Glbs.settingObj["nir"]["ref"]["base_dark"];
       this.theSampleData.nir.std = Glbs.settingObj["nir"]["ref"]["base_std"];
-      this.mod_list = Glbs.settingObj.models;
+      this.mod_list = Glbs.modelInfo;
       loading.close();
     }, delay);
   },

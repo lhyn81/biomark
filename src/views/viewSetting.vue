@@ -52,9 +52,6 @@ export default {
       // Update settingObj
       Glbs.settingObj["sample"]["sp_name"] = this.$refs.sp_name.getTags();
       Glbs.settingObj["sample"]["op_name"] = this.$refs.op_name.getTags();
-      // Glbs.settingObj["nir"]["interval"] = this.$refs.ref_interval.value;
-      // Glbs.settingObj["nir"]["avg"] = this.$refs.ref_avg.value;
-      // Pass setting string to C#
       let cfgStr = JSON.stringify(Glbs.settingObj);
       CefPipe.saveCfg(cfgStr);
     },

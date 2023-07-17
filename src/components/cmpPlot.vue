@@ -1,5 +1,5 @@
 <template>
-  <div ref="mychart" style="width: 600px; height: 400px; background: #fff"></div>
+  <div ref="mychart" style="width: 800px; height: 400px; background: #b6b2b2"></div>
 </template>
 
 <script>
@@ -13,6 +13,21 @@ export default {
       charts: "",
       theData: [150, 230, 224, 218, 135, 147, 260],
       option: {
+        title: {
+          text: 'Stacked Line'
+        },
+        tooltip: {
+          trigger: 'axis'
+        },
+        legend: {
+          data: []
+        },
+        grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
+          containLabel: true
+        },
         xAxis: {
           type: "category",
           data: [],
