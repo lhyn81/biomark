@@ -37,6 +37,7 @@ export default {
           trigger: 'axis'
         },
         legend: {
+          left:'20%',
           data: []
         },
         xAxis: {

@@ -1,8 +1,8 @@
 <template>
   <el-scrollbar height="600px">
     <div class="viewSetting">
-      <el-tabs v-model="activeName"  v-loading="loading">
-        <el-tab-pane label="仪器设置" name="first">
+      <el-tabs v-model="activeTab"  v-loading="loading">
+        <el-tab-pane label="仪器设置" name="1st">
           <div>
             <span class="num-spin">默认积分时间</span>
             <el-input-number ref="ref_interval" v-model="interval" :step="100" :min="100" :max="1000" step-strictly></el-input-number>
@@ -11,16 +11,12 @@
             <div><CmpPlot ref="nir_base"></CmpPlot></div>
           </div>
         </el-tab-pane>
-        <el-tab-pane label="采样设置" name="second">
+        <el-tab-pane label="采样设置" name="2nd">
           <CmpTags ref="sp_name" myTitle="样本名设置" />
           <CmpTags ref="op_name" myTitle="操作员设置" />
         </el-tab-pane>
       </el-tabs>
 
-      <!-- <el-collapse v-model="activeNames" v-loading="loading">
-        <el-collapse-item title="仪器设置" name="1" class="custom-collapse-item"></el-collapse-item>
-        <el-collapse-item title="采样设置" name="2" class="custom-collapse-item"></el-collapse-item>
-      </el-collapse> -->
       <div class="savebtn">
         <el-button @click="saveSetting" type="success" plain>保存设置</el-button>
       </div>
@@ -41,9 +37,10 @@ export default {
 
   data() {
     return {
-      loading: true,
+      loading: false,
       interval: Glbs.settingObj["nir"]["interval"],
       avg: Glbs.settingObj["nir"]["avg"],
+      activeTab:'1st'
     };
   },
 
@@ -63,7 +60,6 @@ export default {
     this.$refs.op_name.setTags(Glbs.settingObj["sample"]["op_name"]);
     let dark_std = [Glbs.settingObj["nir"]["ref"]["base_dark"], Glbs.settingObj["nir"]["ref"]["base_std"]];
     this.$refs.nir_base.setdata(dark_std);
-    this.loading = false;
   },
 };
 </script>
