@@ -8,7 +8,7 @@
             <el-input-number ref="ref_interval" v-model="interval" :step="100" :min="100" :max="1000" step-strictly></el-input-number>
             <span class="num-spin">默认采样次数</span>
             <el-input-number ref="ref_avg" v-model="avg" :step="1" :min="5" :max="10" step-strictly></el-input-number>
-            <div><CmpPlot ref="nir_base"></CmpPlot></div>
+            <div class="item"><CmpChart ref="chart_line" style="height: 100%; width: 100%;"  :the-option="opt"></CmpChart></div>
           </div>
         </el-tab-pane>
         <el-tab-pane label="采样设置" name="2nd">
@@ -26,13 +26,13 @@
 
 <script>
 import CmpTags from "../components/cmpTags.vue";
-import CmpPlot from "@/components/cmpPlot.vue";
+import CmpChart from "@/components/cmpChart.vue";
 import Glbs from "@/components/glb.js";
 
 export default {
   components: {
     CmpTags,
-    CmpPlot,
+    CmpChart,
   },
 
   data() {
@@ -40,7 +40,9 @@ export default {
       loading: false,
       interval: Glbs.settingObj["nir"]["interval"],
       avg: Glbs.settingObj["nir"]["avg"],
-      activeTab:'1st'
+      activeTab:'1st',
+      opt:JSON.parse(JSON.stringify(Glbs.baseOption))
+
     };
   },
 
@@ -58,8 +60,22 @@ export default {
     // 更新UI元素
     this.$refs.sp_name.setTags(Glbs.settingObj["sample"]["sp_name"]);
     this.$refs.op_name.setTags(Glbs.settingObj["sample"]["op_name"]);
-    let dark_std = [Glbs.settingObj["nir"]["ref"]["base_dark"], Glbs.settingObj["nir"]["ref"]["base_std"]];
-    this.$refs.nir_base.setdata(dark_std);
+    // 更新UI元素
+    let a = {
+      type:"line",
+      smooth:true,
+      name:"暗电流",
+      data:Glbs.settingObj["nir"]["ref"]["base_dark"],
+    };
+    let b = {
+      type:"line",
+      smooth:true,
+      name:"标准反射",
+      data:Glbs.settingObj["nir"]["ref"]["base_std"],
+    };
+    this.opt.xAxis.data = Glbs.wvls;
+    this.opt.series = [a,b];
+    this.opt.legend.data = this.opt.series.map(obj=>obj.name);
   },
 };
 </script>

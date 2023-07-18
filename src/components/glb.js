@@ -42,12 +42,12 @@ export default {
         },
         xAxis: {
           type: "category",
-          data: [],
         },
         yAxis: {
           type: "value",
         },
-        series: [],
+        series: [
+        ],
         toolbox: {
             show: true,
             feature: {

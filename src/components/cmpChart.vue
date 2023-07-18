@@ -1,5 +1,5 @@
 <template>
-    <div ref="mychart" style="width: 100%; height: 100%;"></div>
+    <div ref="mychart" :style="`width:${mysize.width}; height:${mysize.height}`"></div>
 </template>
   
   <script>
@@ -7,9 +7,16 @@
   export default {
     name: "",
 
-    props:[
-        "theOption"
-    ],
+    props:{
+      "theOption" : null,
+      "mysize"  : {
+        type:Object,
+        default:{
+          width:'100%',
+          height:'100%'
+        }
+      }  
+    },
 
     data() {
       return {
@@ -18,7 +25,10 @@
     },
   
     methods: {
+    setdata() {
+      this.charts.setOption(this.theOption);
     },
+  },
   
     mounted() {
       this.$nextTick(function () {

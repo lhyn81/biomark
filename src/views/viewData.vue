@@ -1,23 +1,23 @@
 <template>
-  <el-scrollbar height="600px" class="viewData">
+  <el-scrollbar height="600px">
     <el-card class="card">
       <div class="box-card">
         <div class="item sub sub1">
-          <div class="text" :size="large" >样本总量</div>
+          <div class="text">样本总量</div>
           <div class="digit">12345</div>
         </div>
         <div class="item sub sub2">内容2</div>
-        <div class="item sub sub3"><CmpChart ref="chart_pie" :the-option="opt"></CmpChart></div>
+        <div class="item sub sub3"><CmpChart ref="chart_pie" style="height: 100%; width: 100%;" :the-option="opt"></CmpChart></div>
       </div>
     </el-card>
     <el-card class="card">
       <div class="box-card">
         <div class="item sub sub1">
-          <div class="text" :size="large" >测试总量</div>
+          <div class="text">测试总量</div>
           <div class="digit">12345</div>
         </div>
         <div class="item sub sub2">内容2</div>
-        <div class="item sub sub3"><CmpChart ref="chart_line" :the-option="opt"></CmpChart></div>
+        <div class="item sub sub3"><CmpChart ref="chart_line" style="height: 100%; width: 100%;"  :the-option="opt"></CmpChart></div>
       </div>
     </el-card>
   </el-scrollbar>
@@ -34,7 +34,7 @@ export default {
 
   data(){
     return {
-      opt:null
+      opt:JSON.parse(JSON.stringify(Glbs.baseOption))
     };
   },
 
@@ -52,15 +52,11 @@ export default {
       name:"标准反射",
       data:Glbs.settingObj["nir"]["ref"]["base_std"],
     };
-
-    this.opt=JSON.parse(JSON.stringify(Glbs.baseOption));
     this.opt.xAxis.data = Glbs.wvls;
     this.opt.series = [a,b];
     this.opt.legend.data = this.opt.series.map(obj=>obj.name);
-
     this.loading = false;
   },
-
 }
 </script>
 
