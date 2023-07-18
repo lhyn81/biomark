@@ -16,11 +16,6 @@
           <CmpTags ref="op_name" myTitle="操作员设置" />
         </el-tab-pane>
       </el-tabs>
-
-      <!-- <el-collapse v-model="activeNames" v-loading="loading">
-        <el-collapse-item title="仪器设置" name="1" class="custom-collapse-item"></el-collapse-item>
-        <el-collapse-item title="采样设置" name="2" class="custom-collapse-item"></el-collapse-item>
-      </el-collapse> -->
       <div class="savebtn">
         <el-button @click="saveSetting" type="success" plain>保存设置</el-button>
       </div>
