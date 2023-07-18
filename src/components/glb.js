@@ -7,8 +7,6 @@ for (let i=0; i<128; i++)
 export default {
     settingObj:null,
     modelInfo:null,
-    iconColorA:"#2c3e50",
-    iconColorB:"#ecf0f1",
     wvls:wvl_list,
     baseOption:{
         color:['#ee6666', '#73c0de', '#3ba272', '#fc8452', '#9a60b4', '#ea7ccc'],
@@ -16,8 +14,8 @@ export default {
             show:true
         },
         title: {
-            text: "主标题",
-            subtext: "副标题",
+            text: "",
+            subtext: "",
             left: "center",
             top: "center",
             textStyle: {
@@ -31,13 +29,14 @@ export default {
         },
         grid:{
             bottom:"10%",
-            left:"10%"
+            left:"5%"
         },
         tooltip: {
           trigger: 'axis'
         },
         legend: {
-          left:'20%',
+          left:'5%',
+          top:'3%',
           data: []
         },
         xAxis: {
@@ -63,6 +62,49 @@ export default {
               restore: {},
             }
           },
+    },
+    basePieOpt:{
+      tooltip: {
+        trigger: 'item'
+      },
+      legend: {
+        top: '5%',
+        left: 'center'
+      },
+      series: [
+        {
+          name: 'Access From',
+          type: 'pie',
+          radius: ['40%', '70%'],
+          avoidLabelOverlap: false,
+          itemStyle: {
+            borderRadius: 10,
+            borderColor: '#fff',
+            borderWidth: 2
+          },
+          label: {
+            show: false,
+            position: 'center'
+          },
+          emphasis: {
+            label: {
+              show: true,
+              fontSize: 40,
+              fontWeight: 'bold'
+            }
+          },
+          labelLine: {
+            show: false
+          },
+          data: [
+            { value: 1048, name: 'Search Engine' },
+            { value: 735, name: 'Direct' },
+            { value: 580, name: 'Email' },
+            { value: 484, name: 'Union Ads' },
+            { value: 300, name: 'Video Ads' }
+          ]
+        }
+      ]
     },
     guid: function fn(prefix) {
         return prefix + (Math.floor(Date.now() / 1000)).toString();
