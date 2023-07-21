@@ -1,60 +1,56 @@
 <template>
   <el-scrollbar height="600px">
-    <el-card class="box-card">
-      <div class="box-inner">
-        <div class="item">
-          <div :size="large" >样本总量</div>
+    <el-card class="card">
+      <div class="box-card">
+        <div class="item sub sub1">
+          <div class="text">样本总量</div>
           <div class="digit">12345</div>
         </div>
-        <div class="item">内容2</div>
-        <div class="item">内容3</div>
+        <div class="item sub sub2"><CmpChart ref="chart_pie_smp" style="height: 100%; width: 100%;" :the-option="opt_pie_smp"></CmpChart></div>
+        <div class="item sub sub3"><CmpChart ref="chart_line_smp" style="height: 100%; width: 100%;" :the-option="opt_line_smp"></CmpChart></div>
       </div>
     </el-card>
   </el-scrollbar>
 </template>
 
 <script>
-import CmpTags from "../components/cmpTags.vue";
-import CmpPlot from "@/components/cmpPlot.vue";
+import CmpChart from "@/components/cmpChart.vue";
 import Glbs from "@/components/glb.js";
 
 export default {
   components: {
-    CmpTags,
-    CmpPlot,
+    CmpChart,
   },
 
-  data() {
+  data(){
     return {
-      loading: true,
-      interval: Glbs.settingObj["nir"]["interval"],
-      avg: Glbs.settingObj["nir"]["avg"],
+      opt_line_smp:JSON.parse(JSON.stringify(Glbs.baseOption)),
+      opt_pie_smp:JSON.parse(JSON.stringify(Glbs.basePieOpt))
     };
-  },
-
-  methods: {
-    saveSetting() {
-      // Update settingObj
-      Glbs.settingObj["sample"]["sp_name"] = this.$refs.sp_name.getTags();
-      Glbs.settingObj["sample"]["op_name"] = this.$refs.op_name.getTags();
-      let cfgStr = JSON.stringify(Glbs.settingObj);
-      CefPipe.saveCfg(cfgStr);
-    },
   },
 
   mounted() {
     // 更新UI元素
-    // this.$refs.sp_name.setTags(Glbs.settingObj["sample"]["sp_name"]);
-    // this.$refs.op_name.setTags(Glbs.settingObj["sample"]["op_name"]);
-    // let dark_std = [Glbs.settingObj["nir"]["ref"]["base_dark"], Glbs.settingObj["nir"]["ref"]["base_std"]];
-    // this.$refs.nir_base.setdata(dark_std);
-    // this.loading = false;
+    let a = {
+      type:"line",
+      smooth:true,
+      name:"暗电流",
+      data:Glbs.settingObj["nir"]["ref"]["base_dark"],
+    };
+    let b = {
+      type:"line",
+      smooth:true,
+      name:"标准反射",
+      data:Glbs.settingObj["nir"]["ref"]["base_std"],
+    };
+    this.opt_line_smp.xAxis.data = Glbs.wvls;
+    this.opt_line_smp.series = [a,b];
+    this.opt_line_smp.legend.data = this.opt_line_smp.series.map(obj=>obj.name);
+
+    
   },
-};
+}
 </script>
-
-
-
 
 <style>
   * {
@@ -65,15 +61,14 @@ export default {
     margin: 3px;
   }
   .digit{
-    font-size: 20px;
+    font-size: 40px;
     margin: 3px;
     color: #8e4506;
   }
-  .box-card {
-    width: 99%;
-    margin: 5px;
+  .card{
+    margin: 10px;
   }
-  .box-inner {
+  .box-card {
     display: flex;
     justify-content: center; /* 水平居中 */
     align-items: center; /* 垂直居中 */
@@ -81,5 +76,21 @@ export default {
   .item {
     flex: auto; /* 均分宽度 */
     text-align: center; /* 水平居中 */
+    height: 300px;
+  }
+  .sub {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* 水平居中 */
+    align-items: center; /* 垂直居中 */
+  }
+  .sub1{
+    width: 20%;
+  }
+  .sub2{
+    width: 30%;
+  }
+  .sub3{
+    width: 50%;
   }
 </style>
