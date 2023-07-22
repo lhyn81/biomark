@@ -1,55 +1,58 @@
 <template>
-  <el-scrollbar height="600px" class="viewNir">
-    <el-tabs class="el-tabs" v-model="activeTab" width="100%" height="600px">
-      <el-tab-pane label="1.样品采谱" name="1st">
-        <div>
-          <span>默认积分时间</span>
-          <el-input-number v-model="theSampleData.interval" :step="100" :min="100" :max="1000"
-            step-strictly></el-input-number>
-          <span>默认采样次数</span>
+  <el-scrollbar height="750px" v-loading="loading" element-loading-text="数据加载中..."
+    element-loading-spinner="el-icon-loading" element-loading-background="rgba(0, 0, 0, 0.8)">
+    <div class="viewNir">
+      <el-tabs class="el-tabs" v-model="activeTab" width="100%" height="600px">
+        <el-tab-pane label="1.样品采谱" name="1st">
           <div>
+            <span>默认积分时间</span>
+            <el-input-number v-model="theSampleData.interval" :step="100" :min="100" :max="1000"
+              step-strictly></el-input-number>
+            <span>默认采样次数</span>
             <el-input-number v-model="theSampleData.avg" :step="1" :min="5" :max="10" step-strictly></el-input-number>
             <el-button type="primary" @click="scan(false)">采集光谱</el-button>
           </div>
-        </div>
-        <div class="blk-nir-father">
-          <CmpChart class="blk-nir-child" ref="plot_rfl" :the-option="opt_rfl" :mysize="{ width: '80%', height: '50%' }" />
-          <CmpChart class="blk-nir-child" ref="plot_abs" :the-option="opt_abs" :mysize="{ width: '80%', height: '50%' }" />
-        </div>
-      </el-tab-pane>
-      <el-tab-pane label="2.填写信息" name="2nd">
-        <div>
-          <span style="width: 100px">样品名称</span>
-          <el-select v-model="theSampleData.name" placeholder="选择样品名称">
-            <el-option v-for="item in sp_names" :key="item.label" :label="item.label" :value="item.value"></el-option>
-          </el-select>
-          <span style="width: 100px">操作员</span>
-          <el-select v-model="theSampleData.oper" placeholder="选择检测员">
-            <el-option v-for="item in op_names" :key="item.label" :label="item.label" :value="item.value"></el-option>
-          </el-select>
-        </div>
-        <div>
-          <el-switch v-model="theSampleData.hasMark" active-text="标定数据" inactive-text="非标定数据"></el-switch>
-          <div v-if="theSampleData.hasMark">
-            <el-input v-model="theSampleData.markName" placeholder="标定指标"></el-input>
-            <el-input v-model="theSampleData.markVal" placeholder="标定数值"></el-input>
+          <div class="blk-nir-father">
+            <CmpChart class="blk-nir-child" ref="plot_rfl" :the-option="opt_rfl"
+              :mysize="{ width: '80%', height: '50%' }" />
+            <CmpChart class="blk-nir-child" ref="plot_abs" :the-option="opt_abs"
+              :mysize="{ width: '80%', height: '50%' }" />
+          </div>
+        </el-tab-pane>
+        <el-tab-pane label="2.填写信息" name="2nd">
+          <div>
+            <span style="width: 100px">样品名称</span>
+            <el-select v-model="theSampleData.name" placeholder="选择样品名称">
+              <el-option v-for="item in sp_names" :key="item.label" :label="item.label" :value="item.value"></el-option>
+            </el-select>
+            <span style="width: 100px">操作员</span>
+            <el-select v-model="theSampleData.oper" placeholder="选择检测员">
+              <el-option v-for="item in op_names" :key="item.label" :label="item.label" :value="item.value"></el-option>
+            </el-select>
           </div>
           <div>
-            <el-button type="primary" @click="saveSample">保存数据</el-button>
+            <el-switch v-model="theSampleData.hasMark" active-text="标定数据" inactive-text="非标定数据"></el-switch>
+            <div v-if="theSampleData.hasMark">
+              <el-input v-model="theSampleData.markName" placeholder="标定指标"></el-input>
+              <el-input v-model="theSampleData.markVal" placeholder="标定数值"></el-input>
+            </div>
+            <div>
+              <el-button type="primary" @click="saveSample">保存数据</el-button>
+            </div>
           </div>
-        </div>
-      </el-tab-pane>
-      <el-tab-pane label="3.模型计算" name="3rd">
-        <el-table ref="modelTable" :data="mod_list" highlight-current-row @current-change="handleCurrentChange">
-          <!-- <el-table-column type="index" width="50"></el-table-column> -->
-          <el-table-column property="id" label="编号" width="100"></el-table-column>
-          <el-table-column property="name" label="名称" width="80"></el-table-column>
-          <el-table-column property="type" label="类型" width="80"></el-table-column>
-          <el-table-column property="desc" label="描述" width="180"></el-table-column>
-        </el-table>
-        <el-button type="primary" @click="infer">模型计算</el-button>
-      </el-tab-pane>
-    </el-tabs>
+        </el-tab-pane>
+        <el-tab-pane label="3.模型计算" name="3rd">
+          <el-table ref="modelTable" :data="mod_list" highlight-current-row @current-change="handleCurrentChange">
+            <!-- <el-table-column type="index" width="50"></el-table-column> -->
+            <el-table-column property="id" label="编号" width="100"></el-table-column>
+            <el-table-column property="name" label="名称" width="80"></el-table-column>
+            <el-table-column property="type" label="类型" width="80"></el-table-column>
+            <el-table-column property="desc" label="描述" width="500"></el-table-column>
+          </el-table>
+          <el-button type="primary" @click="infer">模型计算</el-button>
+        </el-tab-pane>
+      </el-tabs>
+    </div>
   </el-scrollbar>
 </template>
 
@@ -64,6 +67,7 @@ export default {
 
   data() {
     return {
+      loading: false,
       sp_names: [],
       op_names: [],
       mod_list: [],
@@ -114,14 +118,14 @@ export default {
     },
 
     scan(darkMode) {
-      this.isLoading = true;
+      this.loading = true;
       CefPipe.scanNirB(darkMode)
         .then((ret) => {
 
           // 获取仪器数据
           let nir_rfl = ret;
           let nir_abs = [];
-          for (let i = 0; i < 128; i++) {
+          for (let i = 0; i < Glbs.waveCount; i++) {
             nir_abs.push((nir_rfl[i] - Glbs.settingObj["nir"]["ref"]["base_dark"][i]) / Glbs.settingObj["nir"]["ref"]["base_std"][i]);
           }
 
@@ -145,12 +149,12 @@ export default {
             data: nir_abs,
           };
 
-          this.opt_rfl.title.text="反射率";
+          this.opt_rfl.title.text = "反射率";
           this.opt_rfl.xAxis.data = Glbs.wvls;
           this.opt_rfl.series = [a];
           this.$refs.plot_rfl.setdata();
 
-          this.opt_abs.title.text="吸收率";
+          this.opt_abs.title.text = "吸收率";
           this.opt_abs.xAxis.data = Glbs.wvls;
           this.opt_abs.series = [b];
           this.$refs.plot_abs.setdata();
@@ -159,7 +163,7 @@ export default {
           CefPipe.err(e.toString());
         })
         .finally(() => {
-          this.isLoading = false;
+          this.loading = false;
         });
     },
 
@@ -187,13 +191,10 @@ export default {
   mounted() {
     let delay = 0;
     if (Glbs.settingObj == null) delay = 3000;
-    const loading = this.$loading({
-      lock: true,
-      text: "加载中...",
-      spinner: "el-icon-loading",
-      background: "rgba(0, 0, 0, 0.8)",
-    });
+    this.loading=true;
     setTimeout(() => {
+
+
       // 通过C#反射模型列表
       this.mod_list = Glbs.modelInfo;
 
@@ -203,15 +204,18 @@ export default {
       this.theSampleData.interval = Glbs.settingObj["nir"]["interval"];
       this.theSampleData.avg = Glbs.settingObj["nir"]["avg"];
 
+      // 去除图表restore按钮
+      delete this.opt_rfl.toolbox.feature.restore;
+      delete this.opt_abs.toolbox.feature.restore;
 
       // 终止loading
-      loading.close();
+      this.loading=false;
     }, delay);
   },
 };
 </script>
 
-<style>
+<style scoped>
 .viewNir {
   padding-left: 10px;
   margin-bottom: 10px;
@@ -232,7 +236,7 @@ export default {
   margin: 10px;
 }
 
-.blk-nir-child{
+.blk-nir-child {
   margin: 10px;
 }
 </style>

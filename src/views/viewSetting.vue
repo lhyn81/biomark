@@ -1,5 +1,6 @@
 <template>
-  <el-scrollbar height="600px">
+  <el-scrollbar height="600px" v-loading="loading" element-loading-text="数据加载中..."
+  element-loading-spinner="el-icon-loading" element-loading-background="rgba(0, 0, 0, 0.8)">
     <div class="viewSetting">
       <el-tabs v-model="activeTab"  v-loading="loading">
         <el-tab-pane label="仪器设置" name="1st">
@@ -8,7 +9,13 @@
             <el-input-number ref="ref_interval" v-model="interval" :step="100" :min="100" :max="1000" step-strictly></el-input-number>
             <span class="num-spin">默认采样次数</span>
             <el-input-number ref="ref_avg" v-model="avg" :step="1" :min="5" :max="10" step-strictly></el-input-number>
-            <div class="item"><CmpChart ref="chart_line" style="height: 100%; width: 100%;"  :the-option="opt"></CmpChart></div>
+            <div class="nirbox">
+              <div class="nirbox_sub1">
+                <el-button round type="primary" size="large" style="margin: 10px 20px;" @click="setDark" plain>重置暗电流</el-button>
+                <el-button round type="primary" size="large" style="margin: 10px 20px;" @click="setStd" plain>重置标准反射</el-button>
+              </div>
+              <div class="nirbox_sub2"><CmpChart ref="chart_line"  :the-option="opt"></CmpChart></div>
+              </div>
           </div>
         </el-tab-pane>
         <el-tab-pane label="采样设置" name="2nd">
@@ -17,7 +24,7 @@
         </el-tab-pane>
       </el-tabs>
       <div class="savebtn">
-        <el-button @click="saveSetting" type="success" plain>保存设置</el-button>
+        <el-button @click="saveSetting" size="large" type="danger" plain>保存设置</el-button>
       </div>
     </div>
   </el-scrollbar>
@@ -41,18 +48,50 @@ export default {
       avg: Glbs.settingObj["nir"]["avg"],
       activeTab:'1st',
       opt:JSON.parse(JSON.stringify(Glbs.baseOption))
-
     };
   },
 
   methods: {
     saveSetting() {
-      // Update settingObj
       Glbs.settingObj["sample"]["sp_name"] = this.$refs.sp_name.getTags();
       Glbs.settingObj["sample"]["op_name"] = this.$refs.op_name.getTags();
       let cfgStr = JSON.stringify(Glbs.settingObj);
       CefPipe.saveCfg(cfgStr);
     },
+
+    setDark(){
+      this.loading = true;
+      CefPipe.scanNirB(false)
+        .then((ret) => {
+          // 更新设置文件的暗电流
+          Glbs.settingObj["nir"]["ref"]["base_dark"] = ret;
+          this.opt.series[0] = ret;
+          this.$refs.chart_line.setdata();
+        })
+        .catch((e) => {
+          CefPipe.err(e.toString());
+        })
+        .finally(() => {
+          this.loading = false;
+        });
+    },
+
+    setStd() {
+      this.loading = true;
+      CefPipe.scanNirB(false)
+        .then((ret) => {
+          // 更新设置文件的标定值
+          Glbs.settingObj["nir"]["ref"]["base_std"] = ret;
+          this.opt.series[1] = ret;
+          this.$refs.chart_line.setdata();
+        })
+        .catch((e) => {
+          CefPipe.err(e.toString());
+        })
+        .finally(() => {
+          this.loading = false;
+        });
+    }
   },
 
   mounted() {
@@ -79,7 +118,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .savebtn {
   margin-top: 20px;
   display: flex;
@@ -125,4 +164,27 @@ export default {
   margin-left: 15px;
   margin-right: 5px;
 }
+
+.nirbox {
+  display: flex;
+  align-items: center;
+  height: 300px;
+  margin-left: 30px;
+}
+
+.nirbox_sub1 {
+  display: flex;
+  flex-direction:column;
+  align-items: center;
+  justify-content: center;
+  width:10%;
+}
+
+
+.nirbox_sub2 {
+  width: 90%;
+  height: 100%;
+  margin: 10px;
+}
+
 </style>

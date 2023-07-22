@@ -1,10 +1,12 @@
+const wvl_count = 117;
 var wvl_list=[];
-var dx = (1700-900)/128
-for (let i=0; i<128; i++)
+var dx = (1700-900)/wvl_count
+for (let i=0; i<wvl_count; i++)
 {
-    wvl_list.push(900+i*dx);
+    wvl_list.push(parseInt(900+i*dx));
 }
 export default {
+    waveCount:wvl_count,
     settingObj:null,
     modelInfo:null,
     wvls:wvl_list,
@@ -29,7 +31,7 @@ export default {
         },
         grid:{
             bottom:"10%",
-            left:"5%"
+            left:"10%"
         },
         tooltip: {
           trigger: 'axis'
@@ -97,11 +99,9 @@ export default {
             show: false
           },
           data: [
-            { value: 1048, name: 'Search Engine' },
-            { value: 735, name: 'Direct' },
-            { value: 580, name: 'Email' },
-            { value: 484, name: 'Union Ads' },
-            { value: 300, name: 'Video Ads' }
+            { value: 1048, name: '秸秆' },
+            { value: 735, name: '模板' },
+            { value: 580, name: '树皮' },
           ]
         }
       ]

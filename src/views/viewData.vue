@@ -1,5 +1,6 @@
 <template>
-  <el-scrollbar height="600px">
+  <el-scrollbar height="600px" v-loading="loading" element-loading-text="数据加载中..."
+  element-loading-spinner="el-icon-loading" element-loading-background="rgba(0, 0, 0, 0.8)">
     <el-card class="card">
       <div class="box-card">
         <div class="item sub sub1">
@@ -24,6 +25,7 @@ export default {
 
   data(){
     return {
+      loading: false,
       opt_line_smp:JSON.parse(JSON.stringify(Glbs.baseOption)),
       opt_pie_smp:JSON.parse(JSON.stringify(Glbs.basePieOpt))
     };
@@ -52,7 +54,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
   * {
     font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
   }
