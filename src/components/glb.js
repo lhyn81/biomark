@@ -17,7 +17,7 @@ export default {
             text: "",
             subtext: "",
             left: "center",
-            top: "center",
+            top: "30%",
             textStyle: {
                 fontSize: 30,
                 color:'rgba(128, 128, 128, 0.5)',
